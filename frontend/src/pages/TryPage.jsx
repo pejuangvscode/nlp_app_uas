@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import CodeBlock from '../components/CodeBlock';
 import { diagnosePatient, ApiError } from '../services/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://rapha-medical-ai-backend.fly.dev';
 
 const REQUEST_EXAMPLE = `{
   "patient_narrative": "Pasien perempuan 29 tahun mengeluh nyeri perut kanan bawah...",
