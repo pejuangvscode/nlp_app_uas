@@ -39,11 +39,11 @@ app = FastAPI(
 Convert patient narratives (free-text stories) into structured medical diagnoses.
 
 ### Features
-- 🏥 **Patient narrative → Diagnosis** with ICD-10 codes
-- 🔑 **API Key authentication** (enabled via `REQUIRE_API_KEY=true`)
-- 🌐 **Multi-language** (Indonesian 🇮🇩 & English 🇬🇧)
-- 📊 **Confidence scoring** and **differential diagnoses**
-- ⚡ **Sub-second inference** (GPU-ready)
+- **Patient narrative to Diagnosis** with ICD-10 codes
+- **API Key authentication** (enabled via `REQUIRE_API_KEY=true`)
+- **Multi-language** support (Indonesian and English)
+- **Confidence scoring** and **differential diagnoses**
+- **Sub-second inference** (GPU-ready)
 
 ### API Versioning
 All endpoints are versioned under `/api/v1/`.
