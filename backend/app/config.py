@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://localhost:3000",
         "https://raphamed.vercel.app",
+        "https://*.vercel.app",
     ]
 
     # API Key Authentication
