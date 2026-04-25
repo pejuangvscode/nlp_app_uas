@@ -14,8 +14,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://*.vercel.app",
-        "*",  # Restrict in production!
+        "https://raphamed.vercel.app",
     ]
 
     # API Key Authentication

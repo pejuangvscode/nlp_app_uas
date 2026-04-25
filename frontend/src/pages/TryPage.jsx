@@ -65,19 +65,19 @@ export default function TryPage() {
       {/* Hero */}
       <section className="hero container" aria-labelledby="hero-title">
         <h1 className="hero-title" id="hero-title">
-          Coba AI Diagnosis{' '}
-          <span className="gradient-text">langsung di browser</span>
+          Clinical Intelligence API{' '}
+          <span className="gradient-text">untuk Faskes Modern</span>
         </h1>
         <p className="hero-desc">
-          Masukkan narasi pasien dalam Bahasa Indonesia, dan model NLP kami akan
-          menghasilkan diagnosis, kode ICD-10, dan rekomendasi tindakan secara real-time.
+          Integrasikan kapabilitas Natural Language Processing ke dalam sistem rekam medis Anda. 
+          Ekstrak narasi klinis menjadi diagnosis terstruktur dan kode ICD-10 dalam hitungan milidetik.
         </p>
         <div className="hero-cta">
           <a className="btn btn-primary btn-lg" href="#playground">
-            Mulai Testing
+            Live Playground
           </a>
           <Link className="btn btn-secondary btn-lg" to="/docs">
-            Lihat API Docs
+            Dokumentasi API
           </Link>
         </div>
 
