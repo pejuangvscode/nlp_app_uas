@@ -1,16 +1,53 @@
-# React + Vite
+# RAPHA Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React + Vite untuk RAPHA MEDICAL AI.
 
-Currently, two official plugins are available:
+Website ini sekarang fokus sebagai:
+- Landing page dokumentasi API (style API reference)
+- Playground untuk mencoba endpoint diagnosis langsung
+- Shortcut ke Swagger UI dan OpenAPI JSON backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run Web Server
 
-## React Compiler
+```bash
+cd frontend
+npm install
+npm run start
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Alternatif command development:
 
-## Expanding the ESLint configuration
+```bash
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Default URL local:
+- http://localhost:5173
+
+## Build Production
+
+```bash
+npm run build
+npm run preview
+```
+
+## Environment Variable
+
+Buat file `.env` di folder `frontend/` jika perlu:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+Jika tidak diisi, aplikasi fallback ke `http://localhost:8000`.
+
+## Fitur Halaman
+
+- Overview API + base URL
+- Authentication docs (X-API-Key)
+- Endpoint reference:
+  - GET /api/v1/health
+  - POST /api/v1/diagnose
+- Contoh payload request/response
+- Daftar status code
+- Playground form untuk uji diagnosis

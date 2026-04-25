@@ -3,11 +3,29 @@ import { useState, useRef } from 'react';
 const MAX_CHARS = 10000;
 const MIN_CHARS = 10;
 
-const PLACEHOLDER = `Contoh: Pasien laki-laki berusia 45 tahun datang dengan keluhan sakit kepala parah yang sudah berlangsung selama 3 hari. Nyeri terasa berdenyut di bagian kanan kepala, disertai mual, dan sensitif terhadap cahaya. Pasien juga mengalami demam ringan 37.8°C. Tidak ada riwayat hipertensi atau diabetes sebelumnya. Pasien saat ini bekerja di lingkungan dengan stres tinggi...`;
+const SAMPLES = [
+  {
+    label: 'Nyeri perut kanan bawah',
+    text: 'Pasien perempuan 29 tahun mengeluh nyeri perut kanan bawah sejak 8 jam lalu. Nyeri bersifat tajam dan menetap, disertai mual dan demam 38.1°C. Nafsu makan menurun. Tidak ada diare. Tidak ada riwayat operasi sebelumnya.',
+  },
+  {
+    label: 'Sakit kepala berdenyut',
+    text: 'Pasien laki-laki 42 tahun dengan keluhan sakit kepala berdenyut sebelah kanan sejak 3 hari. Intensitas sedang hingga berat, memburuk saat aktivitas. Disertai mual dan sensitif terhadap cahaya. Tidak ada demam.',
+  },
+  {
+    label: 'Sesak napas & dada berat',
+    text: 'Pasien perempuan 58 tahun dengan riwayat DM tipe 2 datang dengan sesak napas tiba-tiba dan rasa berat di dada sejak 1 jam. Keluar keringat dingin. TD 150/90 mmHg. Tidak ada batuk.',
+  },
+];
 
 export default function DiagnosisForm({ onSubmit, isLoading }) {
   const [text, setText] = useState('');
   const textareaRef = useRef(null);
+
+  const handleSample = (sample) => {
+    setText(sample.text);
+    textareaRef.current?.focus();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,51 +40,63 @@ export default function DiagnosisForm({ onSubmit, isLoading }) {
   const canSubmit = !isLoading && !isOverLimit && !isUnderMin;
 
   return (
-    <section className="form-card" aria-label="Form Input Diagnosis">
+    <div>
+      {/* Sample prompts */}
+      <div className="sample-prompts" aria-label="Contoh narasi pasien">
+        <span className="sample-prompt-label">Coba:</span>
+        {SAMPLES.map((s) => (
+          <button
+            key={s.label}
+            type="button"
+            className="sample-chip"
+            onClick={() => handleSample(s)}
+            disabled={isLoading}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
       <form onSubmit={handleSubmit} noValidate>
         <label className="form-label" htmlFor="patient-narrative">
-          Cerita Pasien{' '}
-          <span>(deskripsikan gejala, riwayat, dan kondisi secara detail)</span>
+          Cerita Pasien
         </label>
 
-        <div className="textarea-wrapper">
-          <textarea
-            id="patient-narrative"
-            ref={textareaRef}
-            className="form-textarea"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder={PLACEHOLDER}
-            disabled={isLoading}
-            aria-describedby="char-count form-hint"
-            aria-required="true"
-            aria-label="Tulis cerita atau gejala pasien di sini"
-            rows={7}
-          />
-          <div
+        <textarea
+          id="patient-narrative"
+          ref={textareaRef}
+          className="form-textarea"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Deskripsikan gejala, riwayat, dan kondisi pasien secara detail…"
+          disabled={isLoading}
+          aria-describedby="char-count"
+          aria-required="true"
+          rows={8}
+        />
+
+        <div className="form-meta">
+          <span className="form-hint">Semakin detail, semakin akurat hasilnya</span>
+          <span
             id="char-count"
-            className={`char-count${isOverLimit ? ' warning' : ''}`}
+            className={`char-count${isOverLimit ? ' warn' : ''}`}
             aria-live="polite"
           >
             {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
-          </div>
+          </span>
         </div>
 
-        <div className="form-footer">
-          <p id="form-hint" className="form-hint">
-            Semakin detail cerita pasien, semakin akurat hasilnya
-          </p>
-          <button
-            id="btn-diagnose"
-            type="submit"
-            className="btn-primary"
-            disabled={!canSubmit}
-            aria-label="Mulai analisis diagnosis AI"
-          >
-            Analisis Diagnosa
-          </button>
-        </div>
+        <button
+          id="btn-diagnose"
+          type="submit"
+          className="btn btn-primary btn-lg"
+          disabled={!canSubmit}
+          aria-label="Mulai analisis diagnosis AI"
+          style={{ width: '100%', justifyContent: 'center' }}
+        >
+          {isLoading ? 'Menganalisis…' : 'Analisis Diagnosa'}
+        </button>
       </form>
-    </section>
+    </div>
   );
 }

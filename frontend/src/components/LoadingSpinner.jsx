@@ -1,21 +1,24 @@
 export default function LoadingSpinner() {
+  const steps = [
+    'Parsing narasi pasien',
+    'Menjalankan model NLP',
+    'Menghitung confidence score',
+    'Menyusun rekomendasi',
+  ];
+
   return (
-    <div className="loading-wrapper" role="status" aria-label="Menganalisis cerita pasien...">
-      <div className="spinner-ring" aria-hidden="true" />
-      <div className="loading-text">
-        <strong>Menganalisis Cerita Pasien...</strong>
-        <span>Model AI sedang memproses narasi Anda</span>
+    <div className="loading-box" role="status" aria-label="Menganalisis cerita pasien…">
+      <div className="spinner" aria-hidden="true" />
+      <div>
+        <p style={{ fontWeight: 600, marginBottom: 8, fontSize: '0.9rem' }}>
+          Menganalisis…
+        </p>
         <ul className="loading-steps" aria-hidden="true">
-          {[
-            '🔍 Parsing narasi pasien',
-            '🧠 Menjalankan model NLP',
-            '📊 Menghitung confidence score',
-            '📋 Menyusun rekomendasi',
-          ].map((step, i) => (
+          {steps.map((step, i) => (
             <li
               key={i}
-              className="loading-step active"
-              style={{ animationDelay: `${i * 0.4}s` }}
+              className="loading-step"
+              style={{ animationDelay: `${i * 0.35}s` }}
             >
               {step}
             </li>
