@@ -69,7 +69,7 @@ const sections = [
 function TabsBlock({ tabs }) {
   const [active, setActive] = useState(0);
   return (
-    <div>
+    <div className="console-card" style={{ margin: '1rem 0' }}>
       <div className="response-tabs" role="tablist">
         {tabs.map((t, i) => (
           <button

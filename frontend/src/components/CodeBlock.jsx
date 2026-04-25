@@ -20,7 +20,7 @@ export default function CodeBlock({ code, lang = '' }) {
         onClick={handleCopy}
         aria-label="Copy code"
       >
-        {copied ? '✓ Copied' : 'Copy'}
+        {copied ? 'Copied' : 'Copy'}
       </button>
     </div>
   );

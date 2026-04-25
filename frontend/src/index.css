@@ -45,7 +45,7 @@ body {
   color: var(--text-1);
   line-height: 1.6;
 }
-::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-subtle); }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9999px; }
 ::selection { background: var(--blue-mid); }
@@ -314,17 +314,49 @@ body {
 .console-body { padding: .9rem 1rem; overflow-x: auto; }
 
 /* ── Code block ── */
-.code-block {
-  font-family: var(--font-mono); font-size: .8rem; color: #94a3b8;
-  line-height: 1.7; white-space: pre; background: transparent; margin: 0;
+.code-wrapper {
+  position: relative;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-lg);
+  margin: 1rem 0;
+  overflow: hidden;
 }
+.console-body .code-wrapper,
+.tab-panel .code-wrapper {
+  margin: 0; border: none; border-radius: 0; background: transparent;
+}
+.code-block {
+  font-family: var(--font-mono); font-size: .82rem; color: #e2e8f0;
+  line-height: 1.6; white-space: pre; background: transparent; margin: 0;
+  padding: 1.1rem 1.25rem; overflow-x: auto;
+}
+.console-body .code-block { padding: 0; }
 .code-block code {
-  font-family: inherit; font-size: inherit; color: inherit;
+  font-family: inherit; font-size: inherit; color: inherit !important;
   background: transparent !important; padding: 0; border-radius: 0;
 }
 
+/* Dark scrollbars for code panels */
+.code-block::-webkit-scrollbar,
+.console-body::-webkit-scrollbar {
+  width: 6px; height: 6px;
+}
+.code-block::-webkit-scrollbar-track,
+.console-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.code-block::-webkit-scrollbar-thumb,
+.console-body::-webkit-scrollbar-thumb {
+  background: #334155; border-radius: 9999px;
+}
+.code-block::-webkit-scrollbar-thumb:hover,
+.console-body::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
 /* ── Response tabs ── */
-.response-tabs { display: flex; gap: .25rem; padding: .6rem .75rem; border-bottom: 1px solid #1e293b; flex-wrap: wrap; }
+.response-tabs { display: flex; gap: .25rem; padding: .6rem .75rem; border-bottom: 1px solid #1e293b; flex-wrap: wrap; background: #0f172a; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
 .response-tab {
   font-size: .75rem; font-weight: 500; border-radius: var(--radius-sm);
   padding: .25rem .6rem; border: none; cursor: pointer; font-family: var(--font);
@@ -509,15 +541,14 @@ body {
 .char-count.warn { color: var(--amber); }
 
 /* ── CodeBlock aliases ── */
-.code-wrapper { position: relative; }
 .copy-btn {
-  position: absolute; top: .5rem; right: .5rem;
-  background: #1e293b; border: 1px solid #334155;
-  color: #94a3b8; font-size: .72rem; font-weight: 500; font-family: var(--font);
+  position: absolute; top: .6rem; right: .6rem;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1; font-size: .72rem; font-weight: 500; font-family: var(--font);
   border-radius: var(--radius-sm); padding: .25rem .6rem;
-  cursor: pointer; transition: all .15s;
+  cursor: pointer; transition: all .15s; backdrop-filter: blur(4px);
 }
-.copy-btn:hover  { background: #334155; color: #e2e8f0; }
+.copy-btn:hover  { background: rgba(255, 255, 255, 0.15); color: #fff; }
 .copy-btn.copied { background: #14532d; border-color: #166534; color: #86efac; }
 
 /* ── Responsive ── */
