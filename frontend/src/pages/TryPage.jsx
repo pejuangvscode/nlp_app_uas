@@ -22,10 +22,7 @@ const RESPONSE_EXAMPLE = `{
   "diagnosis": "Appendicitis, unspecified",
   "confidence": 0.91,
   "icd_code": "K37",
-  "recommendations": [
-    "Segera konsultasi ke IGD untuk pemeriksaan fisik",
-    "Lakukan pemeriksaan darah lengkap"
-  ],
+
   "differential_diagnoses": ["Gastroenteritis", "UTI"],
   "model_version": "dummy-v0.1",
   "processing_time_ms": 512.4

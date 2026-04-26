@@ -57,22 +57,7 @@ export default function DiagnosisResult({ result, onReset }) {
           </span>
         </div>
 
-        {/* Recommendations */}
-        {result.recommendations?.length > 0 && (
-          <div>
-            <h3 className="result-section-title">
-              Rekomendasi Tindakan
-            </h3>
-            <ol className="rec-list" aria-label="Rekomendasi tindakan medis">
-              {result.recommendations.map((rec, i) => (
-                <li key={i} className="rec-item">
-                  <span className="rec-num" aria-hidden="true">{i + 1}</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+
 
         {/* Differential */}
         {result.differential_diagnoses?.length > 0 && (
