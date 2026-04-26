@@ -46,7 +46,34 @@ export default function DiagnosisResult({ result, onReset }) {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Top 5 Predictions */}
+      <div className="result-body">
+        <h3 className="result-section-title">Top 5 Prediksi Penyakit</h3>
+        <div className="predictions-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {result.top_predictions?.map((pred, i) => (
+            <div key={i} className="prediction-item" style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '12px 16px', background: 'var(--surface-2)', borderRadius: '8px',
+              borderLeft: i === 0 ? '4px solid var(--primary)' : '4px solid var(--border)'
+            }}>
+              <div>
+                <div style={{ fontWeight: i === 0 ? '600' : '500', color: i === 0 ? 'var(--text-1)' : 'var(--text-2)' }}>
+                  {i + 1}. {pred.diagnosis}
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-3)', marginTop: '4px' }}>
+                  ICD-10: <span style={{ fontFamily: 'monospace' }}>{pred.icd_code}</span>
+                </div>
+              </div>
+              <div style={{
+                fontWeight: '600',
+                color: pred.confidence >= 0.85 ? 'var(--success)' : pred.confidence >= 0.5 ? 'var(--warning)' : 'var(--text-3)'
+              }}>
+                {Math.round(pred.confidence * 100)}%
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="result-footer">
         <div className="result-meta">
           <span className="meta-chip">

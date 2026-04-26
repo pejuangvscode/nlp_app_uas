@@ -118,21 +118,28 @@ class NLPModel:
             
             result = response.json()
             
-            # HuggingFace typically returns a list of list of dicts: [[{"label": "LABEL_0", "score": 0.9}]]
+            top_predictions = []
             if isinstance(result, list) and len(result) > 0:
-                if isinstance(result[0], list):
-                    top_prediction = result[0][0]
-                else:
-                    top_prediction = result[0]
+                predictions = result[0] if isinstance(result[0], list) else result
+                for pred in predictions:
+                    label_str = pred.get("label", "0")
+                    confidence_val = pred.get("score", 0.0)
+                    try:
+                        pred_idx = int(''.join(filter(str.isdigit, str(label_str))))
+                    except ValueError:
+                        pred_idx = 0
+                    
+                    disease_info = LABEL_MAP.get(pred_idx, LABEL_MAP[0])
+                    top_predictions.append({
+                        "diagnosis": disease_info["diagnosis"],
+                        "icd_code": disease_info["icd_code"],
+                        "confidence": round(confidence_val, 4)
+                    })
                 
-                label_str = top_prediction.get("label", "0")
-                confidence_val = top_prediction.get("score", 0.0)
-                
-                # Extract integer from "LABEL_X" or just parse integer
-                try:
-                    pred_idx = int(''.join(filter(str.isdigit, str(label_str))))
-                except ValueError:
-                    pred_idx = 0
+                # Sort by confidence descending
+                top_predictions.sort(key=lambda x: x["confidence"], reverse=True)
+                # Keep top 5
+                top_predictions = top_predictions[:5]
             else:
                 raise ValueError("Unexpected API response format")
 
@@ -143,22 +150,18 @@ class NLPModel:
                 "diagnosis": "API Connection Error",
                 "confidence": 0.0,
                 "icd_code": "ERR",
-                "recommendations": [f"Gagal menghubungi model di HuggingFace: {str(e)}"],
-                "differential_diagnoses": [],
+                "top_predictions": [],
                 "processing_time_ms": round(elapsed_ms, 2),
             }
 
-        # Map index to actual disease info
-        disease_info = LABEL_MAP.get(pred_idx, LABEL_MAP[0])
-
+        main_pred = top_predictions[0] if top_predictions else {"diagnosis": "Unknown", "icd_code": "UNK", "confidence": 0.0}
         elapsed_ms = (time.perf_counter() - start) * 1000
 
         return {
-            "diagnosis": disease_info["diagnosis"],
-            "confidence": round(confidence_val, 4),
-            "icd_code": disease_info["icd_code"],
-            "recommendations": disease_info["recommendations"],
-            "differential_diagnoses": disease_info["differentials"],
+            "diagnosis": main_pred["diagnosis"],
+            "confidence": main_pred["confidence"],
+            "icd_code": main_pred["icd_code"],
+            "top_predictions": top_predictions,
             "processing_time_ms": round(elapsed_ms, 2),
         }
 

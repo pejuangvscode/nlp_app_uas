@@ -94,10 +94,14 @@ def predict(req: InferenceRequest):
         cluster_logits, disease_logits = model(input_ids, attention_mask)
         
     probs = torch.softmax(disease_logits, dim=-1)
-    confidence, pred_class = torch.max(probs, dim=-1)
+    top_probs, top_indices = torch.topk(probs, 5, dim=-1)
     
-    # Return in standard HuggingFace Inference API format
-    return [[{
-        "label": f"LABEL_{pred_class.item()}",
-        "score": float(confidence.item())
-    }]]
+    # Return in standard HuggingFace Inference API format (list of list of dicts)
+    result = []
+    for i in range(5):
+        result.append({
+            "label": f"LABEL_{top_indices[0][i].item()}",
+            "score": float(top_probs[0][i].item())
+        })
+        
+    return [result]

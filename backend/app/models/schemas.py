@@ -36,37 +36,19 @@ class DiagnoseRequest(BaseModel):
 
 # ---------- Response Models ----------
 
+class Prediction(BaseModel):
+    diagnosis: str
+    icd_code: str
+    confidence: float
+
 class DiagnoseResponse(BaseModel):
-    """
-    Structured diagnosis response.
-    
-    Fields:
-        request_id: Unique identifier for this request (for tracing)
-        diagnosis: Primary diagnosis name
-        confidence: Model confidence score (0.0 – 1.0)
-        icd_code: ICD-10 code for the diagnosis
-        recommendations: List of recommended next steps
-        differential_diagnoses: Alternative possible diagnoses
-        model_version: Version of the NLP model used
-        processing_time_ms: Inference time in milliseconds
-    """
-    request_id: str = Field(
-        default_factory=lambda: str(uuid.uuid4()),
-        description="Unique request ID for tracing",
-    )
-    diagnosis: str = Field(..., description="Primary diagnosis")
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score (0-1)")
-    icd_code: str = Field(..., description="ICD-10 diagnostic code")
-    recommendations: list[str] = Field(
-        default_factory=list,
-        description="Recommended next steps",
-    )
-    differential_diagnoses: list[str] = Field(
-        default_factory=list,
-        description="Alternative possible diagnoses",
-    )
-    model_version: str = Field(..., description="Model version used for inference")
-    processing_time_ms: float = Field(..., description="Processing time in milliseconds")
+    request_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    diagnosis: str = Field(...)
+    confidence: float = Field(..., ge=0.0, le=1.0)
+    icd_code: str = Field(...)
+    top_predictions: list[Prediction] = Field(default_factory=list)
+    model_version: str = Field(...)
+    processing_time_ms: float = Field(...)
 
 
 class HealthResponse(BaseModel):

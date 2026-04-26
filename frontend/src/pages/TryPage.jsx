@@ -22,8 +22,18 @@ const RESPONSE_EXAMPLE = `{
   "diagnosis": "Appendicitis, unspecified",
   "confidence": 0.91,
   "icd_code": "K37",
-
-  "differential_diagnoses": ["Gastroenteritis", "UTI"],
+  "top_predictions": [
+    {
+      "diagnosis": "Appendicitis, unspecified",
+      "icd_code": "K37",
+      "confidence": 0.91
+    },
+    {
+      "diagnosis": "Gastroenteritis",
+      "icd_code": "A09",
+      "confidence": 0.05
+    }
+  ],
   "model_version": "dummy-v0.1",
   "processing_time_ms": 512.4
 }`;
