@@ -25,9 +25,9 @@ class Settings(BaseSettings):
     # Comma-separated list of valid API keys (set via environment variable)
     VALID_API_KEYS: str = ""
 
-    # Model
-    MODEL_NAME: str = "dummy-v0.1"
-    MODEL_VERSION: str = "0.1.0"
+    # HuggingFace API Configuration
+    HF_API_URL: str = "https://api-inference.huggingface.co/models/your-username/your-model"
+    HF_API_TOKEN: str = ""
 
     class Config:
         env_file = ".env"
