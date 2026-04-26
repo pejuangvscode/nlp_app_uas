@@ -515,6 +515,22 @@ body {
 }
 .diff-tag:hover { border-color: var(--border-strong); color: var(--text-1); }
 
+/* pred-list (Top 5 Predictions) */
+.pred-list { display: flex; flex-direction: column; gap: 1.15rem; }
+.pred-row { display: flex; flex-direction: column; gap: 0.4rem; }
+.pred-info { display: flex; justify-content: space-between; align-items: flex-end; }
+.pred-name { font-size: 0.9rem; font-weight: 600; color: var(--text-1); display: flex; align-items: center; gap: 0.5rem; }
+.pred-pct { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-2); }
+.pred-bar-bg { width: 100%; height: 6px; background: var(--bg-muted); border-radius: 9999px; overflow: hidden; }
+.pred-bar-fill { height: 100%; border-radius: 9999px; transition: width 1s cubic-bezier(.16,1,.3,1); }
+/* Subtle gradient of importance */
+.pred-row:nth-child(1) .pred-name { font-size: 1rem; }
+.pred-row:nth-child(1) .pred-bar-fill { background: var(--blue); }
+.pred-row:nth-child(2) .pred-bar-fill { background: #60a5fa; }
+.pred-row:nth-child(3) .pred-bar-fill { background: #93c5fd; }
+.pred-row:nth-child(4) .pred-bar-fill { background: var(--border-strong); }
+.pred-row:nth-child(5) .pred-bar-fill { background: var(--border); }
+
 /* meta-chip */
 .meta-chip { font-size: .75rem; color: var(--text-3); }
 .meta-chip strong { color: var(--text-2); font-weight: 500; }
