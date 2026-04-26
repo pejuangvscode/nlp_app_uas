@@ -21,7 +21,7 @@ class MultiHeadDiseaseClassifier(nn.Module):
 
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        pooled_output = outputs.pooler_output
+        pooled_output = outputs.last_hidden_state[:, 0, :]
         pooled_output = self.dropout(pooled_output)
         cluster_logits = self.cluster_head(pooled_output)
         disease_logits = self.disease_head(pooled_output)

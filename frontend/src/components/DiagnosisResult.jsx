@@ -46,34 +46,6 @@ export default function DiagnosisResult({ result, onReset }) {
         </div>
       </div>
 
-      {/* Body */}
-      <div className="result-body">
-        {/* Disclaimer */}
-        <div className="alert alert-warning" role="alert">
-          <span>
-            Hasil ini adalah <strong>analisis AI</strong> dan{' '}
-            <strong>bukan pengganti diagnosis dokter</strong>. Selalu konsultasikan
-            dengan tenaga medis profesional.
-          </span>
-        </div>
-
-
-
-        {/* Differential */}
-        {result.differential_diagnoses?.length > 0 && (
-          <div>
-            <h3 className="result-section-title">
-              Diagnosis Banding
-            </h3>
-            <div className="diff-tags" aria-label="Kemungkinan diagnosis lain">
-              {result.differential_diagnoses.map((d, i) => (
-                <span key={i} className="diff-tag">{d}</span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Footer */}
       <div className="result-footer">
         <div className="result-meta">
