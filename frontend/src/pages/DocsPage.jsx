@@ -139,11 +139,6 @@ export default function DocsPage() {
           dengan kode ICD-10 dan skor kepercayaan masing-masing.
         </p>
 
-        {/* Windows note */}
-        <div className="alert alert-warning" style={{ marginTop: '1rem' }}>
-          <strong>💻 Windows PowerShell users:</strong> Perintah <code>curl</code> di PowerShell adalah alias dari <code>Invoke-WebRequest</code> yang <strong>tidak kompatibel</strong> dengan flag Unix (<code>-X</code>, <code>-H</code>, <code>-d</code>). Gunakan tab <strong>PowerShell</strong> di bawah, atau install curl asli via <code>winget install curl.curl</code>.
-        </div>
-
         {/* Base URL */}
         <div className="docs-section">
           <h2 className="docs-section-title" id="base-url">Base URL</h2>
