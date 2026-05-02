@@ -4,47 +4,47 @@ import CodeBlock from '../components/CodeBlock';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://rapha-medical-ai-backend.fly.dev';
 
 /* ── Copy-paste data ── */
-const HEALTH_REQUEST  = `curl ${API_BASE_URL}/api/v1/health`;
+const HEALTH_CURL  = `curl ${API_BASE_URL}/api/v1/health`;
+const HEALTH_PWSH  = `Invoke-RestMethod -Uri "${API_BASE_URL}/api/v1/health" -Method GET`;
 const HEALTH_RESPONSE = `{
   "status": "healthy",
   "app_name": "RAPHA MEDICAL AI",
   "version": "1.0.0",
-  "model_version": "dummy-v0.1"
+  "model_version": "rapha-bert-multihead-v1"
 }`;
 
-const DIAGNOSE_REQUEST = `curl -X POST ${API_BASE_URL}/api/v1/diagnose \\
-  -H "Content-Type: application/json" \\
-  -H "X-API-Key: your-api-key-here" \\
-  -d '{
-    "patient_narrative": "Pasien perempuan 29 tahun mengeluh nyeri perut kanan bawah selama 8 jam.",
-    "language": "id",
-    "metadata": {
-      "patient_age": 29,
-      "patient_gender": "female",
-      "source": "web_app"
-    }
-  }'`;
+const DIAGNOSE_CURL = `curl -X POST ${API_BASE_URL}/api/v1/diagnose ^
+  -H "Content-Type: application/json" ^
+  -d "{\\"patient_narrative\\": \\"Pasien perempuan 29 tahun mengeluh nyeri perut kanan bawah selama 8 jam.\\",\\"language\\":\\"id\\"}"`;
+
+const DIAGNOSE_PWSH = `$body = @{
+    patient_narrative = "Pasien perempuan 29 tahun mengeluh nyeri perut kanan bawah selama 8 jam."
+    language          = "id"
+    metadata          = @{ patient_age = 29; patient_gender = "female" }
+} | ConvertTo-Json
+
+Invoke-RestMethod \`
+    -Uri "${API_BASE_URL}/api/v1/diagnose" \`
+    -Method POST \`
+    -ContentType "application/json" \`
+    -Body $body`;
 
 const DIAGNOSE_RESPONSE_200 = `{
   "request_id": "ff53819e-9dbf-4e6d-9343-4da257b21ca8",
-  "diagnosis": "Appendicitis, unspecified",
-  "confidence": 0.91,
-  "icd_code": "K37",
-  "recommendations": [
-    "Segera konsultasi ke IGD untuk pemeriksaan fisik",
-    "Lakukan pemeriksaan darah lengkap",
-    "Pertimbangkan USG atau CT scan abdomen"
+  "diagnosis": "Gastritis",
+  "confidence": 0.62,
+  "icd_code": "DIS-009",
+  "top_predictions": [
+    { "diagnosis": "Gastritis",          "icd_code": "DIS-009", "confidence": 0.62 },
+    { "diagnosis": "Demam Tifoid",        "icd_code": "DIS-012", "confidence": 0.18 },
+    { "diagnosis": "Gastroenteritis",    "icd_code": "DIS-011", "confidence": 0.09 },
+    { "diagnosis": "IBS",               "icd_code": "DIS-015", "confidence": 0.06 },
+    { "diagnosis": "Hemoroid Grade 1-2", "icd_code": "DIS-013", "confidence": 0.02 }
   ],
-  "differential_diagnoses": [
-    "Gastroenteritis",
-    "Urinary tract infection"
-  ],
-  "model_version": "dummy-v0.1",
-  "processing_time_ms": 512.4
+  "model_version": "rapha-bert-multihead-v1",
+  "processing_time_ms": 1842.3
 }`;
 
-const DIAGNOSE_RESPONSE_401 = `{ "detail": "API key required. Include 'X-API-Key' header." }`;
-const DIAGNOSE_RESPONSE_403 = `{ "detail": "Invalid API key." }`;
 const DIAGNOSE_RESPONSE_422 = `{
   "detail": [
     {
@@ -54,6 +54,8 @@ const DIAGNOSE_RESPONSE_422 = `{
     }
   ]
 }`;
+
+const DIAGNOSE_RESPONSE_503 = `{ "detail": "Model not loaded. HuggingFace Space may still be starting up." }`;
 
 const AUTH_HEADER = `X-API-Key: your-api-key-here`;
 
@@ -133,9 +135,14 @@ export default function DocsPage() {
         <h1 className="docs-page-title" id="overview">API Reference</h1>
         <p className="docs-page-desc">
           RAPHA MEDICAL AI menyediakan REST API untuk analisis narasi pasien berbasis NLP.
-          API melakukan inferensi terhadap teks klinis dan mengembalikan diagnosis terstruktur
-          dengan kode ICD-10, rekomendasi, dan skor kepercayaan.
+          API melakukan inferensi terhadap teks klinis dan mengembalikan Top-5 prediksi diagnosis
+          dengan kode ICD-10 dan skor kepercayaan masing-masing.
         </p>
+
+        {/* Windows note */}
+        <div className="alert alert-warning" style={{ marginTop: '1rem' }}>
+          <strong>💻 Windows PowerShell users:</strong> Perintah <code>curl</code> di PowerShell adalah alias dari <code>Invoke-WebRequest</code> yang <strong>tidak kompatibel</strong> dengan flag Unix (<code>-X</code>, <code>-H</code>, <code>-d</code>). Gunakan tab <strong>PowerShell</strong> di bawah, atau install curl asli via <code>winget install curl.curl</code>.
+        </div>
 
         {/* Base URL */}
         <div className="docs-section">
@@ -188,7 +195,8 @@ export default function DocsPage() {
           </div>
 
           <TabsBlock tabs={[
-            { label: 'cURL', code: HEALTH_REQUEST },
+            { label: 'cURL (Mac/Linux)', code: HEALTH_CURL },
+            { label: 'PowerShell (Windows)', code: HEALTH_PWSH },
             { label: '200 OK', code: HEALTH_RESPONSE },
           ]} />
         </div>
@@ -203,7 +211,7 @@ export default function DocsPage() {
           </h2>
           <p className="docs-section-desc">
             Endpoint utama. Menerima narasi pasien dalam bahasa natural dan mengembalikan
-            diagnosis terstruktur, kode ICD-10, rekomendasi tindakan, dan diferensial diagnosis.
+            Top-5 prediksi diagnosis terstruktur beserta kode ICD-10 dan skor kepercayaan masing-masing.
           </p>
 
           <div className="endpoint-url">
@@ -245,13 +253,16 @@ export default function DocsPage() {
           </table>
 
           {/* Response tabs */}
-          <h3 className="result-section-title" style={{ marginBottom: 12 }}>Responses</h3>
+          <h3 className="result-section-title" style={{ marginBottom: 4, marginTop: 24 }}>Request Examples & Responses</h3>
+          <p className="docs-section-desc" style={{ marginBottom: 8 }}>
+            Pilih tab sesuai OS Anda. Pengguna Windows gunakan tab <strong>PowerShell</strong>.
+          </p>
           <TabsBlock tabs={[
-            { label: 'cURL Example', code: DIAGNOSE_REQUEST },
+            { label: 'cURL (Mac/Linux)', code: DIAGNOSE_CURL },
+            { label: 'PowerShell (Windows)', code: DIAGNOSE_PWSH },
             { label: '200 Success', code: DIAGNOSE_RESPONSE_200 },
-            { label: '401 Unauthorized', code: DIAGNOSE_RESPONSE_401 },
-            { label: '403 Forbidden', code: DIAGNOSE_RESPONSE_403 },
             { label: '422 Unprocessable', code: DIAGNOSE_RESPONSE_422 },
+            { label: '503 Unavailable', code: DIAGNOSE_RESPONSE_503 },
           ]} />
 
           {/* Response fields */}
@@ -273,27 +284,22 @@ export default function DocsPage() {
               <tr>
                 <td><span className="param-name">diagnosis</span></td>
                 <td><span className="param-type">string</span></td>
-                <td>Hasil diagnosis utama dalam Bahasa Inggris (terminologi medis)</td>
+                <td>Hasil diagnosis utama (prediksi teratas)</td>
               </tr>
               <tr>
                 <td><span className="param-name">confidence</span></td>
                 <td><span className="param-type">float (0–1)</span></td>
-                <td>Skor kepercayaan model terhadap diagnosis</td>
+                <td>Skor kepercayaan model terhadap diagnosis utama</td>
               </tr>
               <tr>
                 <td><span className="param-name">icd_code</span></td>
                 <td><span className="param-type">string</span></td>
-                <td>Kode ICD-10 yang sesuai dengan diagnosis</td>
+                <td>Kode ICD diagnosis utama</td>
               </tr>
               <tr>
-                <td><span className="param-name">recommendations</span></td>
-                <td><span className="param-type">string[]</span></td>
-                <td>Daftar rekomendasi tindakan medis</td>
-              </tr>
-              <tr>
-                <td><span className="param-name">differential_diagnoses</span></td>
-                <td><span className="param-type">string[]</span></td>
-                <td>Diagnosis banding yang perlu dipertimbangkan</td>
+                <td><span className="param-name">top_predictions</span></td>
+                <td><span className="param-type">object[]</span></td>
+                <td>Top-5 prediksi penyakit. Setiap objek berisi <code>diagnosis</code>, <code>icd_code</code>, dan <code>confidence</code></td>
               </tr>
               <tr>
                 <td><span className="param-name">model_version</span></td>
@@ -318,10 +324,9 @@ export default function DocsPage() {
           <div className="status-grid">
             {[
               { code: '200', cls: 's200', desc: 'Request berhasil diproses' },
-              { code: '401', cls: 's401', desc: 'API key wajib tapi tidak diberikan' },
-              { code: '403', cls: 's403', desc: 'API key tidak valid atau expired' },
               { code: '422', cls: 's422', desc: 'Payload tidak valid atau field kurang' },
               { code: '500', cls: 's500', desc: 'Error internal di sisi model / server' },
+              { code: '503', cls: 's500', desc: 'Model belum siap — HuggingFace Space sedang start up' },
               { code: '408', cls: 's422', desc: 'Request timeout (>30 detik)' },
             ].map((s) => (
               <div key={s.code} className="status-item">
